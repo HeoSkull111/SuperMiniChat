@@ -7,7 +7,6 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-const messageHistory = [];
 const publicPath = path.join(__dirname);
 app.get('/', (req, res) => {
   res.sendFile(path.join(publicPath, 'index.html'));
@@ -19,7 +18,7 @@ wss.on('connection', (ws) => {
   ws.on('message', (message) => {
     try {
       const messageData = JSON.parse(message);
-      // messageHistory.push(`[${messageData.username}]: ${messageData.message}`);
+
       wss.clients.forEach((client) => {
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           // Gửi tên và nội dung riêng lẻ cho các máy khách

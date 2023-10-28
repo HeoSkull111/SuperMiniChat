@@ -6,28 +6,22 @@
   <title>Chat Đơn Giản</title>
 </head>
 <body>
-  <input type="text" id="username" placeholder="Your Name">
-  <input type="text" id="message" placeholder="Type a message...">
+  <input type="text" id="username" placeholder="Nhập tên vào">
+  <hr>
+  <input type="text" id="message" placeholder="Nhập message...">
   <button onclick="sendMessage()">Send</button>
   <div id="chat"></div>
   <script>
-    const socket = new WebSocket('ws://192.168.0.127:3000');
+    // const socket = new WebSocket('ws://192.168.0.127:3000');
+    const socket = new WebSocket('ws://10.106.26.105:3000');
+
+    const chat = document.getElementById('chat');
+    const messageDiv = document.createElement('div');
 
     socket.onmessage = (event) => {
-      const chat = document.getElementById('chat');
-      const message = document.createElement('div');
-      message.textContent = event.data;
-      chat.appendChild(message);
+      messageDiv.textContent = event.data;
+      chat.appendChild(messageDiv);
     };
-    // Hiển thị lịch sử tin nhắn khi web load
-    // window.addEventListener('load', () => {
-    //   const chat = document.getElementById('chat');
-    //   messageHistory.forEach((message) => {
-    //     const messageElement = document.createElement('div');
-    //     messageElement.textContent = message;
-    //     chat.appendChild(messageElement);
-    //   });
-    // });
 
     function sendMessage() {
       const usernameInput = document.getElementById('username');
@@ -44,6 +38,10 @@
 
         // Gửi tin nhắn dưới dạng JSON
         socket.send(JSON.stringify(messageData));
+
+        //Hiển thị chat bản thân kèm username + message đã gửi
+        messageDiv.textContent = username + ': ' + messageText;
+        chat.appendChild(messageDiv);
 
         // Xóa nội dung tin nhắn sau khi gửi
         messageInput.value = '';
